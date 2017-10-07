@@ -23,23 +23,13 @@ Game.prototype.setup = function(){
         var _st = this.stage;
 		var _SW = this.SW;
 		var _SH = this.SH;
-
-
-        
-		/* loading textures from sprite sheet, get names from _frameKeys
-		_rs.atlas.spritesheet._frameKeys: 
-		["Logo.png", "Overlay-FreeSpins.png", "Overlay.png", "bigwin-screen.jpg", "blackbg.png", "symbol1.png", "symbol10.png", "symbol11.png", "symbol12.png", "symbol2.png", "symbol3.png", "symbol4.png", "symbol5.png", "symbol6.png", "symbol7.png", "symbol8.png", "symbol9.png"] */
-
     
-        // game play scene
         var sc1 = new PIXI.Container();
         _st.addChild(sc1);
         sc1.alpha = 0;
     
-        // score scene
         var sc2 = new PIXI.Container();
         _st.addChild(sc2);    
-    
     
         this.addScene = function() {
             
@@ -65,8 +55,6 @@ Game.prototype.setup = function(){
             var logo = utils.addAtlasSprite("Logo.png");
             utils.scaleToStageW(logo,_SW)	
 
-            // container for stage graphics
-
             var spin = new PIXI.Sprite(this._rs.spin.texture);
             spin.name = 'spin';
             spin.x = _SW/2;
@@ -76,7 +64,6 @@ Game.prototype.setup = function(){
             spin.interactive = true;
             spin.buttonMode = true;
 
-            /* set the order of sprites*/
             sc1.addChild(bg1);
             sc1.addChild(overlay1);
             sc1.addChild(overlay2);	
@@ -122,35 +109,62 @@ Game.prototype.setup = function(){
         
         this.showScore = function() {
         
+            // blur game scene
             var blurf1 = new PIXI.filters.BlurFilter();
             blurf1.blur = 0;
             sc1.filters = [blurf1]; 
             
+            var c1 = sc1;
+            var spin = utils.getSpriteByName(c1,"spin");
+            spin.interactive = false;
+            
+            var msg1 = styles.createText('You are the winner');
+            msg1.name = 'msg1';        
+            msg1.anchor.set(0.5);
+            msg1.x = _SW*.5;
+            msg1.y = 120;
+
+            var msg2 = styles.createText('Points 1000');
+            msg2.name = 'msg2';        
+            msg2.anchor.set(0.5);
+            msg2.x = _SW*.5;
+            msg2.y = 350;
+            
+            sc2.addChild(msg1);
+            sc2.addChild(msg2);
+
+
             // show choosen symbol
             var award = utils.addAtlasSprite("symbol2.png");
             award.anchor.set(0.5);
             award.x = _SW*.5;
             award.y = _SH*.5;
-            
+            award.scale.set(3);
+            award.alpha = 0;            
             sc2.addChild(award);
             
+            // animate transition in
             var tl = new TimelineMax();
             
-            //console.log(sc1);
-            var c1 = sc1;
-            var spin = utils.getSpriteByName(c1,"spin");
-            spin.interactive = false;
-            tl.to(spin,0.4, {alpha:0},"+=0");
-            tl.to(utils.getSpriteByName(c1,"overlay1"),0.4, {alpha:0},"-=0.4")
-            tl.to(utils.getSpriteByName(c1,"overlay2"),0.4, {alpha:0},"-=0.4")
+            tl.to(spin,0.4, {alpha:0},"award+=0")
+            // a little bit of testing
+            .to(utils.getSpriteByName(c1,"overlay1"),0.5, {y:-200,alpha:0},"award+=0")
+            .to(utils.getSpriteByName(c1,"overlay2"),0.5, {y:"+=200",alpha:1},"award+=0")
             
             //tl.to(blurf1, 0.2, {blur:5},"+=0.0");
-            tl.from(award.scale, 1, {x:0,y:0, ease: Elastic.easeOut.config(1, 0.3)},"-=0.7")
+            .to(award.scale, 3, {x:1.3,y:1.3, ease: Elastic.easeOut.config(0.5, 0.3)},"award+=0")
+            .to(award, 1, {alpha:1},"award+=0")
+            .from(msg1.scale, 1, {x:0,y:0, ease: Elastic.easeOut.config(0.5, 0.3)},"award+=0.2")
+            .from(msg2.scale, 1, {x:0,y:0, ease: Elastic.easeOut.config(0.5, 0.3)},"award+=0.4")
+            
+            .to(utils.getSpriteByName(sc1,"bg1"), 3, {rotation:-Math.PI * 2 },"award+=0")
+            .to(utils.getSpriteByName(sc1,"bg1").scale, 0.4, {x:1.4,y:2},"award+=0");         
+            // play relevant sound for the winner
+            //tl.call(utils.getSound('death').play(),"+=4");
             
         }
         
         this.addScene(); 
-        
         
 /*    
         function toss() {

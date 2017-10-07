@@ -57,16 +57,20 @@ Utils.prototype.rnd = function (v) {
 }
 
 Utils.prototype.getSpriteByName = function(c,n) {
-    var k = c.children.length;
+    var k = c.children.length+1;
     var i = 0;
     while(--k) {
-        i++
-        var r = c.getChildAt(k);
+        //console.log(c.getChildAt(k-1).name,k)
+        var r = c.getChildAt(k-1);
         var p;
+        //console.log(k,r.name)
         if (r.name == n) {
-            p = k
-        }                
+            p = k-1;
+        }
+        i++
+
     }
+    //console.log('--')
     return c.getChildAt(p);
 }
 
