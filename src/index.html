@@ -3,17 +3,56 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTML5 PIXI TEST</title>     
-	<script src="./assets/lib/pixi.min.js"></script>
-	<script src="./assets/lib/TweenLite.min.js"></script>
-	<script src="./assets/lib/TweenMax.min.js"></script>
-	<script src="./assets/lib/TimelineLite.min.js"></script>
-	<script src="./assets/lib/TimelineMax.min.js"></script>
-    
-	<script type="text/javascript"  src="src/Game.js"> </script>
+    <title>HTML5 PIXI TEST</title>
+                       
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+            overflow: hidden;
+		}
+		body {
+			background-color: grey;
+		}
+		#preloader {
+			position: absolute;
+			left:0;
+			top:0;
+			display: block;
+            opacity: 1;
+			width: 0px;
+			height: 5px;
+			color: white; 
+			background-color: red;
+		}
+		
+		#gameContainer {
+  
+            position: absolute;
+            left: 0;
+            top: 0;
+		}
+		
+		canvas {
+			width: 800;
+			height: 480;
+		}
+		
+	</style>
+        <script src="assets/lib/soundjs.min.js"></script>	
+        <script src="assets/lib/TweenMax.min.js"></script>
+        <script src="assets/lib/pixi.min.js"></script>
+        <script src="assets/lib/pixi-sound.js"></script>
+        <script src="src/Styles.js"> </script>               
+        <script src="src/Utils.js"> </script>       
+        <script src="src/Game.js"> </script>
 </head>
 <body>
-	<script type="text/javascript"  src="src/LoadStage.js"> </script>
+
+	<div id="gameContainer"></div>
+	<div id="preloader"></div>		
+	<script src="src/LoadStage.js"> </script>
+	
 </body>
 
 </html>
