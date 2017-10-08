@@ -2,6 +2,11 @@
  *Class Styles
  */
 function Styles() {
+  
+    // blur game scene
+    this.blurf1 = new PIXI.filters.BlurFilter();
+    this.blurf1.blur = 0;    
+    
     
 }
 

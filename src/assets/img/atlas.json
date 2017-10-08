@@ -54,7 +54,7 @@
 	"sourceSize": {"w":150,"h":150},
 	"pivot": {"x":0.5,"y":0.5}
 },
-"symbol10.png":
+"symbol2.png":
 {
 	"frame": {"x":166,"y":1286,"w":150,"h":150},
 	"rotated": false,
@@ -63,7 +63,7 @@
 	"sourceSize": {"w":150,"h":150},
 	"pivot": {"x":0.5,"y":0.5}
 },
-"symbol11.png":
+"symbol3.png":
 {
 	"frame": {"x":318,"y":1286,"w":150,"h":150},
 	"rotated": false,
@@ -72,7 +72,7 @@
 	"sourceSize": {"w":150,"h":150},
 	"pivot": {"x":0.5,"y":0.5}
 },
-"symbol12.png":
+"symbol4.png":
 {
 	"frame": {"x":470,"y":1286,"w":150,"h":150},
 	"rotated": false,
@@ -81,7 +81,7 @@
 	"sourceSize": {"w":150,"h":150},
 	"pivot": {"x":0.5,"y":0.5}
 },
-"symbol2.png":
+"symbol5.png":
 {
 	"frame": {"x":622,"y":1286,"w":150,"h":150},
 	"rotated": false,
@@ -90,7 +90,7 @@
 	"sourceSize": {"w":150,"h":150},
 	"pivot": {"x":0.5,"y":0.5}
 },
-"symbol3.png":
+"symbol6.png":
 {
 	"frame": {"x":774,"y":1286,"w":150,"h":150},
 	"rotated": false,
@@ -99,7 +99,7 @@
 	"sourceSize": {"w":150,"h":150},
 	"pivot": {"x":0.5,"y":0.5}
 },
-"symbol4.png":
+"symbol7.png":
 {
 	"frame": {"x":926,"y":1286,"w":150,"h":150},
 	"rotated": false,
@@ -108,7 +108,7 @@
 	"sourceSize": {"w":150,"h":150},
 	"pivot": {"x":0.5,"y":0.5}
 },
-"symbol5.png":
+"symbol8.png":
 {
 	"frame": {"x":1078,"y":1286,"w":150,"h":150},
 	"rotated": false,
@@ -117,7 +117,7 @@
 	"sourceSize": {"w":150,"h":150},
 	"pivot": {"x":0.5,"y":0.5}
 },
-"symbol6.png":
+"symbol9.png":
 {
 	"frame": {"x":1230,"y":1286,"w":150,"h":150},
 	"rotated": false,
@@ -126,7 +126,7 @@
 	"sourceSize": {"w":150,"h":150},
 	"pivot": {"x":0.5,"y":0.5}
 },
-"symbol7.png":
+"symbol10.png":
 {
 	"frame": {"x":1382,"y":1286,"w":150,"h":150},
 	"rotated": false,
@@ -135,7 +135,7 @@
 	"sourceSize": {"w":150,"h":150},
 	"pivot": {"x":0.5,"y":0.5}
 },
-"symbol8.png":
+"symbol11.png":
 {
 	"frame": {"x":1534,"y":1286,"w":150,"h":150},
 	"rotated": false,
@@ -144,7 +144,7 @@
 	"sourceSize": {"w":150,"h":150},
 	"pivot": {"x":0.5,"y":0.5}
 },
-"symbol9.png":
+"symbol12.png":
 {
 	"frame": {"x":1686,"y":1286,"w":150,"h":150},
 	"rotated": false,

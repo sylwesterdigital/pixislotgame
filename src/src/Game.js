@@ -24,12 +24,24 @@ Game.prototype.setup = function(){
 		var _SW = this.SW;
 		var _SH = this.SH;
     
+        // scene for gameplay
         var sc1 = new PIXI.Container();
+        sc1.name = "scene1";
         _st.addChild(sc1);
         sc1.alpha = 0;
-    
+
+        var sc3 = new PIXI.Container();
+        sc3.name = "scene3";    
+        _st.addChild(sc3);    
+        
+        // scene for score
         var sc2 = new PIXI.Container();
-        _st.addChild(sc2);    
+        sc2.name = "scene2";    
+        _st.addChild(sc2);
+    
+
+    
+    
     
         this.addScene = function() {
             
@@ -53,6 +65,7 @@ Game.prototype.setup = function(){
             overlay2.y = 420;
             
             var logo = utils.addAtlasSprite("Logo.png");
+            logo.name = "logo";
             utils.scaleToStageW(logo,_SW)	
 
             var spin = new PIXI.Sprite(this._rs.spin.texture);
@@ -124,9 +137,7 @@ Game.prototype.setup = function(){
             
         
             // blur game scene
-            var blurf1 = new PIXI.filters.BlurFilter();
-            blurf1.blur = 0;
-            sc1.filters = [blurf1]; 
+            sc1.filters = [styles.blurf1]; 
             
             var c1 = sc1;
             var spin = utils.getSpriteByName(c1,"spin");
@@ -160,6 +171,9 @@ Game.prototype.setup = function(){
             award.alpha = 0;            
             sc2.addChild(award);
             
+            // capture scene
+            utils.capturePos(game.stage.getChildAt(0));
+            
             // animate transition in
             var tl = new TimelineMax();
             
@@ -183,17 +197,68 @@ Game.prototype.setup = function(){
             
         }
         
+        this.clearScoreScene = function(ar) {
+            console.log('clear')
+            for(var i=0; i<ar.length; i++) {
+                var r = ar[i].destroy();
+            }
+            
+        }
+        
+        this.showItems = function() {
+
+          for(var i=0; i <5; i++) {
+              
+                var n = Math.ceil(Math.random()*12);
+                var r = 'symbol'+n+'.png';
+
+                var s = utils.addAtlasSprite(r);
+                s.scale.x = 0.65;
+                s.scale.y = s.scale.x;
+                s.dscale = s.scale;
+                s.anchor.set(0.5);
+                s.x = 160 + (i * 120);
+                s.y = 215;
+              
+                sc3.addChild(s);
+                
+                TweenLite.from(s.scale, 0.5, {y:-s.dscale, x:-s.dscale});
+                
+                TweenLite.from(s.scale, 0.5, {y:0, x:0}); 
+                
+            }            
+            
+        }
+        
+        
         this.backToGame = function() {
             
             // hide the score
-            
             // build a game play scene again
-            
             // launch game play 
+            // animate transition in
             
+            var tl = new TimelineMax();
             
+            var spin = utils.getSpriteByName(sc1,"spin");
+            var overlay1 = utils.getSpriteByName(sc1,"overlay1");
+            var overlay2 = utils.getSpriteByName(sc1,"overlay2");
+            var bg1 = utils.getSpriteByName(sc1,"bg1");
+            var msg1 = utils.getSpriteByName(sc2,"msg1");
+            var msg2 = utils.getSpriteByName(sc2,"msg2");
+            var award = utils.getSpriteByName(sc2,"award");
             
+            tl.to(spin,0.4, {alpha:spin.oalpha},"back+=0")
             
+            .to(overlay1,0.5, {y:overlay1.oy,alpha:overlay1.oalpha},"back+=0")
+            .to(overlay2,0.5, {y:overlay2.oy,alpha:overlay2.oalpha},"back+=0")            
+            .to(bg1.scale, 3, {x:bg1.oscale.x, y:bg1.oscale.y},"back+=0")
+            .to(bg1, 1, {width:bg1.owidth,height:bg1.oheight},"back+=0")
+            
+            .to(msg1, 2, {x:-_SW+100,ease: Elastic.easeInOut.config(1, 1)}, "back+=0")
+            .to(award, 1.5, {x:-_SW+100,ease: Elastic.easeInOut.config(1, 1)},"back+=0.1")
+            .to(msg2, 1, {x:-_SW+100,ease: Elastic.easeInOut.config(1, 1)}, "back+=0.2")
+            .addCallback(function() { this.clearScoreScene([msg1,msg2,award]); }.bind(this), "back+=2.5")
             
             
         }

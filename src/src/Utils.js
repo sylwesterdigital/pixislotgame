@@ -43,6 +43,24 @@ Utils.prototype.getSound = function (id) {
     return r;
 }
 
+Utils.prototype.capturePos = function (c) {
+    //console.log(c.name)
+    for(var i=0; i<c.children.length; i++) {
+        var r = c.getChildAt(i);
+        r.ox = r.x;
+        r.oy = r.y;
+        r.owidth = r.width;
+        r.oheight = r.height;
+        r.oscale = r.scale;
+        r.orotation = r.rotation;
+        r.oalpha = r.alpha;
+        //console.log(i,r.name,r.x,r.y,r.width,r.height,r.rotation,r.alpha,r.scale.x,r.scale.y);
+    }
+}
+
+
+
+
 Utils.prototype.playMusic = function () {
     var music1 = this._rs.music.sound;
     music1.play();
