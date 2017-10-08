@@ -1,8 +1,11 @@
 var utils = new Utils();
 var aext = utils.ifmp3();
 
-var game = new Game();
 var styles = new Styles();
+var data = new Data();
+
+var game = new Game();
+
 
 
 var renderer = new PIXI.Application(800, 480, {

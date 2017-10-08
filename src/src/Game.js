@@ -107,7 +107,21 @@ Game.prototype.setup = function(){
             
         }    
         
-        this.showScore = function() {
+        this.showScore = function(num) {
+            
+            var sdata = data.items[num];
+            
+            if(data == undefined) {
+                data = 1;
+            }
+           
+            
+            // stop the game pla
+            
+            // hide game play scene
+            
+            // display message and bigg
+            
         
             // blur game scene
             var blurf1 = new PIXI.filters.BlurFilter();
@@ -118,13 +132,13 @@ Game.prototype.setup = function(){
             var spin = utils.getSpriteByName(c1,"spin");
             spin.interactive = false;
             
-            var msg1 = styles.createText('You are the winner');
+            var msg1 = styles.createText(sdata.msg1);
             msg1.name = 'msg1';        
             msg1.anchor.set(0.5);
             msg1.x = _SW*.5;
             msg1.y = 120;
 
-            var msg2 = styles.createText('Points 1000');
+            var msg2 = styles.createText(sdata.points);
             msg2.name = 'msg2';        
             msg2.anchor.set(0.5);
             msg2.x = _SW*.5;
@@ -135,8 +149,11 @@ Game.prototype.setup = function(){
 
 
             // show choosen symbol
-            var award = utils.addAtlasSprite("symbol2.png");
+            //var spritedata = data.inam+""+data.items[4].id+".png";
+            //console.log(spritedata);
+            var award = utils.addAtlasSprite(data.inam+""+sdata.id+".png");
             award.anchor.set(0.5);
+            award.name = "award";
             award.x = _SW*.5;
             award.y = _SH*.5;
             award.scale.set(3);
@@ -158,11 +175,30 @@ Game.prototype.setup = function(){
             .from(msg2.scale, 1, {x:0,y:0, ease: Elastic.easeOut.config(0.5, 0.3)},"award+=0.4")
             
             .to(utils.getSpriteByName(sc1,"bg1"), 3, {rotation:-Math.PI * 2 },"award+=0")
-            .to(utils.getSpriteByName(sc1,"bg1").scale, 0.4, {x:1.4,y:2},"award+=0");         
+            .to(utils.getSpriteByName(sc1,"bg1").scale, 0.4, {x:1.4,y:2},"award+=0")
+            .addCallback(function() {utils.getSound('death').play()}.bind(this), "award+=0.4")
+            
             // play relevant sound for the winner
             //tl.call(utils.getSound('death').play(),"+=4");
             
         }
+        
+        this.backToGame = function() {
+            
+            // hide the score
+            
+            // build a game play scene again
+            
+            // launch game play 
+            
+            
+            
+            
+            
+            
+        }
+        
+        
         
         this.addScene(); 
         
