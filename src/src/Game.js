@@ -141,11 +141,20 @@ Game.prototype.setup = function(){
 
         this.drawAwardSquare = function(t) {
             var gr = new PIXI.Graphics();
-            gr.lineStyle(2, 0xFF00FF, 1);
-            gr.beginFill(0xFF00BB, 0.25);
-            gr.drawRoundedRect(0, 0, 120, 200, 15);
+            gr.lineStyle(10, 0xFF00FF, 1);
+            gr.beginFill(0xFF00BB, 0);
+            gr.drawRoundedRect(0, 0, 175, 240, 18);
             gr.endFill();
+            gr.x = -85;
+            gr.y = -110;
+            gr.alpha = 0;
+            //gr.anchor.set(0.5);
             t.addChild(gr);
+            
+            var tl = new TimelineMax();
+            tl.to(gr, 1, {alpha:1, onComplete:function() {utils.getSound('sound2').play()}},"+=0.4")
+        
+            
         }
         
         
@@ -222,13 +231,20 @@ Game.prototype.setup = function(){
         
        this.showItemsUpdated = function() {
            
-            // remove this element from game.basket
+           // data update
+           // remove this element from game.basket
             game.basket.splice(game.itemsPos+2,1);
             game.basket = utils.shuffle(game.basket);          
            
+           // reset position
             game.itemsPos = 0;
            
-            for (var i = sc3.children.length - 1; i >= 0; i--) {	         sc3.removeChild(sc3.children[i]);
+           // remove children
+            for (var i = sc3.children.length - 1; i >= 0; i--) {
+                var r =  sc3.children[i];
+                if(r != null || r != 'undefined') {
+                    sc3.removeChild(r);
+                }
             };           
 
             var tl = new TimelineMax();
@@ -260,9 +276,15 @@ Game.prototype.setup = function(){
         
         
         this.clearScoreScene = function(ar) {
+            
             console.log('clear')
+            
             for(var i=0; i<ar.length; i++) {
-                var r = ar[i].destroy();
+                
+                var r = ar[i];
+                if(r != null) {
+                    r.destroy();
+                }
             }
             
         }
@@ -298,30 +320,20 @@ Game.prototype.setup = function(){
         
         
         this.animateCycleEnd = function() {
-                        
-            var spin = utils.getSpriteByName(sc1,"spin");
-            spin.interactive = true;
-            
-            
             var scene3 = utils.getSpriteByName(_st,"scene3");
-            
             var d = scene3.children[3].data;
-            
-            
             var tl = new TimelineMax();
-            tl.addCallback(function() {game.showScore(d);}.bind(this), "+=2")
             
-            //console.log(scene3.children[3].data);
-            
+            // draw this.drawAwardSquare
+            var v = scene3.getChildAt(3);
+            game.drawAwardSquare(v);
+            tl.addCallback(function() {game.showScore(d);}.bind(this), "+=1.5")
             
         }
 
         
         this.animateCycle = function() {
-            
-            //utils.setIntervalX(this.animateItems,400,15)
-            
-            
+                        
             var spin = utils.getSpriteByName(sc1,"spin");
             spin.interactive = false;
             
@@ -339,12 +351,7 @@ Game.prototype.setup = function(){
         }
 
         
-        
-        
-        
         this.animateItems = function() {
-            
-            
             
             // animate
             var tl = new TimelineMax();
@@ -361,7 +368,12 @@ Game.prototype.setup = function(){
             
             tl.addCallback(function() { 
                 
-            sc3.getChildAt(0).destroy(); }.bind(this), "mov+=0.3")
+                var r = sc3.getChildAt(0);
+                if(r != null) {
+                    r.destroy();
+                }
+            
+            }.bind(this), "mov+=0.3")
 
             var n = basket[game.itemsPos+5];
             var d = game.getSymbolData(data.items,game.basket[game.itemsPos+5]);
@@ -399,14 +411,6 @@ Game.prototype.setup = function(){
             return obj[nid];
         }
         
-        this.rebuildItems = function() {
-            
-            //
-            
-            
-        }
-        
-        
         
         this.backToGame = function() {
             
@@ -424,8 +428,7 @@ Game.prototype.setup = function(){
             game.showItemsUpdated();
             
             
-            tl.to(spin,0.4, {alpha:spin.oalpha},"back+=0")
-            .to(scene3, 0.3, {alpha:1},"back+=0")
+            tl.to(scene3, 0.3, {alpha:1},"back+=0")
             
             .to(overlay1,0.5, {y:overlay1.oy,alpha:overlay1.oalpha},"back+=0")
             .to(overlay2,0.5, {y:overlay2.oy,alpha:overlay2.oalpha},"back+=0")            
@@ -435,10 +438,12 @@ Game.prototype.setup = function(){
             .to(msg1, 2, {x:-_SW+100,ease: Elastic.easeInOut.config(1, 1)}, "back+=0")
             .to(award, 1.5, {x:-_SW+100,ease: Elastic.easeInOut.config(1, 1)},"back+=0.1")
             .to(msg2, 1, {x:-_SW+100,ease: Elastic.easeInOut.config(1, 1)}, "back+=0.2")
+            
+            .to(spin, 0.3, {alpha:1},"back+=0")
+            .from(spin.scale, 0.5, {x:0,y:0, ease: Elastic.easeOut.config(1, 0.3), onComplete:function() {spin.interactive = true}},"back+=0.6")
+            
             .addCallback(function() { 
                 this.clearScoreScene([msg1,msg2,award]);
-                var spin = utils.getSpriteByName(sc1,"spin");
-                spin.interactive = true;            
             }.bind(this), "back+=2.5")
             
         }
