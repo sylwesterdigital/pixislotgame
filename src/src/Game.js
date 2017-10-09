@@ -34,9 +34,15 @@ Game.prototype.setup = function(){
         _st.addChild(sc1);
         sc1.alpha = 0;
 
-        var sc3 = new PIXI.Container();
-        sc3.name = "scene3";    
-        _st.addChild(sc3);    
+        var sc3 = new PIXI.Sprite();
+        sc3.name = "scene3";
+        //sc3.width = _SW;
+        //sc3.height = _SH;
+        //sc3.x = 0;
+        //sc3.y = 0;    
+        //sc3.anchor.set(0.5)
+    
+        _st.addChild(sc3);
         
         // scene for score
         var sc2 = new PIXI.Container();
@@ -133,14 +139,8 @@ Game.prototype.setup = function(){
             
         }    
         
-        this.showScore = function(num) {
-            
-            var sdata = data.items[num];
-            
-            if(data == undefined) {
-                data = 1;
-            }
-        
+        this.showScore = function(sdata) {
+                    
             sc1.filters = [styles.blurf1]; 
             
             var c1 = sc1;
@@ -174,13 +174,20 @@ Game.prototype.setup = function(){
             award.alpha = 0;            
             sc2.addChild(award);
             
+            var scene3 = utils.getSpriteByName(_st,"scene3");
+
+            //console.log(scene3.pivot)
             // capture scene
             utils.capturePos(game.stage.getChildAt(0));
             
             // animate transition in
             var tl = new TimelineMax();
             
-            tl.to(spin,0.4, {alpha:0},"award+=0")
+            //
+            
+            tl.to(scene3, 0.3, {alpha:0},"award+=0")
+            
+            .to(spin,0.4, {alpha:0},"award+=0")
             // a little bit of testing
             .to(utils.getSpriteByName(c1,"overlay1"),0.5, {y:-200,alpha:0},"award+=0")
             .to(utils.getSpriteByName(c1,"overlay2"),0.5, {y:"+=200",alpha:1},"award+=0")
@@ -194,11 +201,53 @@ Game.prototype.setup = function(){
             .to(utils.getSpriteByName(sc1,"bg1"), 3, {rotation:-Math.PI * 2 },"award+=0")
             .to(utils.getSpriteByName(sc1,"bg1").scale, 0.4, {x:1.4,y:2},"award+=0")
             .addCallback(function() {utils.getSound('death').play()}.bind(this), "award+=0.4")
+            .addCallback(function() {game.backToGame();}.bind(this), "+=1")
             
             // play relevant sound for the winner
             //tl.call(utils.getSound('death').play(),"+=4");
             
         }
+
+        
+       this.showItemsUpdated = function() {
+
+           
+            // remove this element from game.basket
+            game.basket.splice(game.itemsPos+2,1);
+            game.basket = utils.shuffle(game.basket);          
+           
+            game.itemsPos = 0;
+           
+            for (var i = sc3.children.length - 1; i >= 0; i--) {	         sc3.removeChild(sc3.children[i]);
+            };           
+
+            var tl = new TimelineMax();
+
+            for(var i=0; i <5; i++) {
+
+                var n = basket[i];
+                var r = 'symbol'+n+'.png';
+ 
+                var s = utils.addAtlasSprite(r);
+                s.scale.x = 0.65;
+                s.scale.y = s.scale.x;
+                s.dscale = s.scale;
+                s.anchor.set(0.5);
+                s.x = 160 + (i * 120);
+                s.y = 215;
+                s.idn = n;
+                
+                //console.log(game.getSymbolData(data.items,s.idn));
+                
+                sc3.addChild(s);
+
+                tl.from(s, 0.5, {x:500},"show3+=0.5")
+                .from(s.scale, 0.2, {y:0, x:0, ease: Elastic.easeOut.config(1,1)},"show3+=0.6") 
+
+            }
+        }                
+        
+        
         
         this.clearScoreScene = function(ar) {
             console.log('clear')
@@ -227,7 +276,7 @@ Game.prototype.setup = function(){
                 s.y = 215;
                 s.idn = n;
                 
-                console.log(game.getSymbolData(data.items,s.idn));
+                //console.log(game.getSymbolData(data.items,s.idn));
                 
                 sc3.addChild(s);
 
@@ -235,41 +284,19 @@ Game.prototype.setup = function(){
                 tl.from(s.scale, 0.2, {y:0, x:0, ease: Elastic.easeOut.config(1,1)},"-=0.1") 
 
             }
-            
-            
-        }
-        
-        this.getChosenSymbol = function(pos) {
-            
-        //            var r = sc3.getChildAt(pos)
-        //            console.log(sc3.children.length,r.getChildAt(pos));
-        //            //game.showScore(r.idn);            
-
-        }
-        
+        }        
         
         
         this.animateCycleEnd = function() {
+                        
             var spin = utils.getSpriteByName(sc1,"spin");
             spin.interactive = true;
-            //game.getChosenSymbol(2)
-    
+            
             var scene3 = utils.getSpriteByName(_st,"scene3");
-            //var chosen = scene3.getChildAt(2);
-            
-            //console.log(scene3.children,chosen.idn);
-            //game.showScore(chosen.idn);
-            
-            for(var i=0; i<scene3.children.length; i++) {
-                var r = scene3.getChildAt(i)
-                //console.log(i, r.idn, r.msg1)
-            }
-            
-            
+            game.showScore(scene3.children[3].data);
             
         }
-        
-        
+
         
         this.animateCycle = function() {
             
@@ -295,6 +322,7 @@ Game.prototype.setup = function(){
         
         
         
+        
         this.animateItems = function() {
             
             
@@ -317,8 +345,8 @@ Game.prototype.setup = function(){
             sc3.getChildAt(0).destroy(); }.bind(this), "mov+=0.3")
 
             var n = basket[game.itemsPos+5];
-            //var data = game.getSymbolData(data.items,game.basket[n])
-            var r = game.getSymbolData(data.items,game.basket[game.itemsPos+5]).frame;
+            var d = game.getSymbolData(data.items,game.basket[game.itemsPos+5]);
+            var r = d.frame;
             
             var i = 4;
 
@@ -329,7 +357,7 @@ Game.prototype.setup = function(){
             s.anchor.set(0.5);
             s.x = 160 + (i * 120);
             s.y = 215;
-            s.data = data;
+            s.data = d;
 
             sc3.addChild(s);
 
@@ -352,6 +380,13 @@ Game.prototype.setup = function(){
             return obj[nid];
         }
         
+        this.rebuildItems = function() {
+            
+            //
+            
+            
+        }
+        
         
         
         this.backToGame = function() {
@@ -365,8 +400,13 @@ Game.prototype.setup = function(){
             var msg1 = utils.getSpriteByName(sc2,"msg1");
             var msg2 = utils.getSpriteByName(sc2,"msg2");
             var award = utils.getSpriteByName(sc2,"award");
+            var scene3 = utils.getSpriteByName(_st,"scene3");
+            
+            game.showItemsUpdated();
+            
             
             tl.to(spin,0.4, {alpha:spin.oalpha},"back+=0")
+            .to(scene3, 0.3, {alpha:1},"back+=0")
             
             .to(overlay1,0.5, {y:overlay1.oy,alpha:overlay1.oalpha},"back+=0")
             .to(overlay2,0.5, {y:overlay2.oy,alpha:overlay2.oalpha},"back+=0")            
