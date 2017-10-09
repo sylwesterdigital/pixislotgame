@@ -25,7 +25,7 @@ Utils.prototype.scaleToStageW = function (r, w) {
 // some simple methods
 Utils.prototype.addAtlasSprite = function (id) {
     var r = new PIXI.Sprite(this._rs.atlas["textures"][id]);
-    console.log(id, r.width, 'x', r.height);
+    //console.log(id, r.width, 'x', r.height);
     return r;
 }
 
@@ -91,6 +91,48 @@ Utils.prototype.getSpriteByName = function(c,n) {
     //console.log('--')
     return c.getChildAt(p);
 }
+
+Utils.prototype.shuffle = function(array) {
+    var cidx = array.length;
+    var tv;
+    var ridx;
+    while (0 !== cidx) {
+        ridx = Math.floor(Math.random() * cidx);
+        cidx -= 1;
+        tv = array[cidx];
+        array[cidx] = array[ridx];
+        array[ridx] = tv;
+    }
+    return array;
+}
+
+Utils.prototype.createPool = function(obj) {
+    var l = obj.length;
+    var bigarr = new Array();    
+    for(var i=0; i<l; i++) {
+        var ra = this['ra'+i];
+        ra = new Array(obj[i].basket)
+        ra.fill(obj[i].id);
+        bigarr.push.apply(bigarr,ra);
+    }
+    return bigarr;
+}
+
+Utils.prototype.setIntervalX = function(callback, delay, repetitions) {
+    var x = 0;
+    var intervalID = window.setInterval(function () {
+       callback();
+       if (++x === repetitions) {
+           window.clearInterval(intervalID);
+       }
+    }, delay);
+}
+
+
+
+
+
+
 
 
 

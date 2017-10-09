@@ -2,10 +2,14 @@
 *Class Game
 */
 function Game(){
-	this.SW=800; // Stage Width
+	
+    this.SW=800; // Stage Width
 	this.SH=480; // Stage Height
 	this.stage;
+    this.itemsPos = 0;
     this._rs = PIXI.loader.resources;
+    
+    
 }
 /**
 *Function called after the load of the images assets
@@ -37,13 +41,17 @@ Game.prototype.setup = function(){
         // scene for score
         var sc2 = new PIXI.Container();
         sc2.name = "scene2";    
-        _st.addChild(sc2);
+        _st.addChild(sc2);    
+        //
     
-
-    
-    
+        //
+        this.basket = utils.shuffle(utils.createPool(data.items));
+        var basket = this.basket;
+        
     
         this.addScene = function() {
+            
+            // building game play scene
             
             var bg1 = utils.addAtlasSprite("bigwin-screen.jpg");
             bg1.name = 'bg1';
@@ -93,8 +101,8 @@ Game.prototype.setup = function(){
             spin.on('pointerdown', function() {
                 var tl = new TimelineMax();
                 var rsp = utils.rnd(0.06) - utils.rnd(0.06);
-                console.log(bg1.scale)
-                console.log(rsp)
+                //console.log(bg1.scale)
+                //console.log(rsp)
                 tl.from(spin, 2, {rotation:-Math.PI * 2 * 5,ease: Elastic.easeOut.config(1, 1)},"+=0");                
                 tl.to(bg1.scale, 1, {x:0.8+rsp,y:0.8+rsp, ease:  Elastic.easeOut.config(1, 1)},"-=2");
                 
@@ -105,8 +113,11 @@ Game.prototype.setup = function(){
 
                 music.volume = 0.2;
                 if(music.isPlaying == false) {
-                    music.play();
+                    //--- annoying music
+                    //music.play();
                 }
+                
+                game.animateCycle();                
                 
                 //tl.to(bg1.scale, 1, {x:1,y:1, ease:  Elastic.easeOut.config(1, 1)},"-=1") 
             });
@@ -114,7 +125,9 @@ Game.prototype.setup = function(){
             var tl = new TimelineMax();
             tl.to(sc1, 0.2, {alpha:1},"+=0.1")
             tl.from(logo, 0.7, {y:-100},"-=0.1")            
-            tl.from(spin.scale, 1, {x:0,y:0, ease: Elastic.easeOut.config(1, 0.3)},"-=0.4")
+            tl.from(spin.scale, 1, {x:0,y:0, ease: Elastic.easeOut.config(1, 0.3)},"-=0.4");
+            
+            this.showItems();
             
             //tl.from(spin, 0.2, {alpha:0},"+=0.1");
             
@@ -127,16 +140,7 @@ Game.prototype.setup = function(){
             if(data == undefined) {
                 data = 1;
             }
-           
-            
-            // stop the game pla
-            
-            // hide game play scene
-            
-            // display message and bigg
-            
         
-            // blur game scene
             sc1.filters = [styles.blurf1]; 
             
             var c1 = sc1;
@@ -157,7 +161,6 @@ Game.prototype.setup = function(){
             
             sc2.addChild(msg1);
             sc2.addChild(msg2);
-
 
             // show choosen symbol
             //var spritedata = data.inam+""+data.items[4].id+".png";
@@ -207,10 +210,13 @@ Game.prototype.setup = function(){
         
         this.showItems = function() {
 
-          for(var i=0; i <5; i++) {
-              
-                var n = Math.ceil(Math.random()*12);
+            var tl = new TimelineMax();
+
+            for(var i=0; i <5; i++) {
+
+                var n = basket[i];
                 var r = 'symbol'+n+'.png';
+                
 
                 var s = utils.addAtlasSprite(r);
                 s.scale.x = 0.65;
@@ -219,24 +225,109 @@ Game.prototype.setup = function(){
                 s.anchor.set(0.5);
                 s.x = 160 + (i * 120);
                 s.y = 215;
-              
+                s.idn = n
+                
                 sc3.addChild(s);
-                
-                TweenLite.from(s.scale, 0.5, {y:-s.dscale, x:-s.dscale});
-                
-                TweenLite.from(s.scale, 0.5, {y:0, x:0}); 
-                
-            }            
+
+                //tl.from(s.scale, 0.5, {y:-s.dscale, x:-s.dscale},"+=0")
+                tl.from(s.scale, 0.2, {y:0, x:0, ease: Elastic.easeOut.config(1,1)},"-=0.1") 
+
+            }
+            
+            
+        }
+        
+        this.getChosenSymbol = function(pos) {
+            
+        //            var r = sc3.getChildAt(pos)
+        //            console.log(sc3.children.length,r.getChildAt(pos));
+        //            //game.showScore(r.idn);            
+
+        }
+        
+        
+        
+        this.animateCycleEnd = function() {
+            var spin = utils.getSpriteByName(sc1,"spin");
+            spin.interactive = true;
+            //game.getChosenSymbol(2)
+    
+            var scene3 = utils.getSpriteByName(_st,"scene3");
+            var chosen = scene3.getChildAt(2);
+            
+            console.log(scene3.children,chosen.idn);
+            game.showScore(chosen.idn); 
             
         }
         
         
-        this.backToGame = function() {
+        
+        this.animateCycle = function() {
             
-            // hide the score
-            // build a game play scene again
-            // launch game play 
-            // animate transition in
+            //utils.setIntervalX(this.animItems,400,15)
+            
+            
+            var spin = utils.getSpriteByName(sc1,"spin");
+            spin.interactive = false;
+            
+            var delay = 400;
+            var repetitions = 15;
+            var x = 0;
+            var intervalID = window.setInterval(function () {
+               game.animItems();
+               if (++x === repetitions) {
+                   window.clearInterval(intervalID);
+                   game.animateCycleEnd();
+               }
+            }, delay);            
+            
+        }
+
+        
+        
+        
+        this.animItems = function() {
+            
+            game.itemsPos +=1;
+            
+            // animate
+            var tl = new TimelineMax();
+
+           for(var i=0; i <5; i++) {
+               var r = sc3.getChildAt(i);
+               
+               if(i == 0) {
+                tl.to(r.scale, 0.2, {x:0,y:0},"mov+=0.1")
+               } else {
+                tl.to(r, 0.2, {x:"-="+120},"mov+=0.1")
+               }
+            }
+            
+            tl.addCallback(function() { 
+                
+            sc3.getChildAt(0).destroy(); }.bind(this), "mov+=0.3")
+
+            var n = basket[game.itemsPos+5];
+            var r = 'symbol'+n+'.png';
+            var i = 4;
+
+            var s = utils.addAtlasSprite(r);
+            s.scale.x = 0.65;
+            s.scale.y = s.scale.x;
+            s.dscale = s.scale;
+            s.anchor.set(0.5);
+            s.x = 160 + (i * 120);
+            s.y = 215;
+            s.idn = n;
+
+            sc3.addChild(s);
+
+            tl.from(s.scale, 0.2, {y:0, x:0, ease: Elastic.easeOut.config(1,1)},"-=0.1")              
+             
+        }
+        
+        
+        this.backToGame = function() {
             
             var tl = new TimelineMax();
             
@@ -258,83 +349,15 @@ Game.prototype.setup = function(){
             .to(msg1, 2, {x:-_SW+100,ease: Elastic.easeInOut.config(1, 1)}, "back+=0")
             .to(award, 1.5, {x:-_SW+100,ease: Elastic.easeInOut.config(1, 1)},"back+=0.1")
             .to(msg2, 1, {x:-_SW+100,ease: Elastic.easeInOut.config(1, 1)}, "back+=0.2")
-            .addCallback(function() { this.clearScoreScene([msg1,msg2,award]); }.bind(this), "back+=2.5")
-            
+            .addCallback(function() { 
+                this.clearScoreScene([msg1,msg2,award]);
+                var spin = utils.getSpriteByName(sc1,"spin");
+                spin.interactive = true;            
+            }.bind(this), "back+=2.5")
             
         }
-        
-        
         
         this.addScene(); 
-        
-/*    
-        function toss() {
-            
-            eraseToss();
-            
-            for(var i=0; i <5; i++) {
-                var n = Math.ceil(Math.random()*12);
-                var r = 'symbol'+n+'.png';
-
-                var s = new PIXI.Sprite(_rs.atlas["textures"][r]);
-                s.scale.x = 0.65;
-                s.scale.y = s.scale.x;
-                s.dscale = s.scale;
-                s.anchor.set(0.5);
-                s.x = 160 + (i * 120);
-                s.y = 185;
-                symbols.addChild(s);
-                
-                TweenLite.from(s.scale, 0.5, {y:-s.dscale, x:-s.dscale});
-                
-                TweenLite.from(s.scale, 0.5, {y:0, x:0}); 
-                
-            }
-            
-            TweenLite.from(spin, 1, {rotation:-Math.PI * 2 * 1},"spin+=2");
-            
-        }
-    
-        function eraseToss() {
-            
-            console.log(symbols.children.length)
-            
-/*            for(var i=0; i < 4; i++) {
-                    symbols.removeChildAt(1);  
-            }
-            
-        }    
-    
-       function scorePage() {
-           //
-           
-            _st.addChild(bg2);
-            var r = new PIXI.Text('YOU WON',style);
-            r.x = _SW/2;
-            r.y =  -50;
-            r.anchor.set(0.5,0.5);
-            stage.addChild(richText);            
-        }
-    
-    
-        spin.on('pointerdown', function() {
-            console.log('so cold here');
-createjs.Sound.play('sound3')            
-            toss();
-        });
-    
-
-    
-        //_st.addChild(addSprite("bigwin-screen.jpg"));
-    
-        toss();*/
-    
-    
-
-    //music.play();
-    
-
-
 		
 }
 
