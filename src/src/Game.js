@@ -225,7 +225,9 @@ Game.prototype.setup = function(){
                 s.anchor.set(0.5);
                 s.x = 160 + (i * 120);
                 s.y = 215;
-                s.idn = n
+                s.idn = n;
+                
+                console.log(game.getSymbolData(data.items,s.idn));
                 
                 sc3.addChild(s);
 
@@ -253,10 +255,17 @@ Game.prototype.setup = function(){
             //game.getChosenSymbol(2)
     
             var scene3 = utils.getSpriteByName(_st,"scene3");
-            var chosen = scene3.getChildAt(2);
+            //var chosen = scene3.getChildAt(2);
             
-            console.log(scene3.children,chosen.idn);
-            game.showScore(chosen.idn); 
+            //console.log(scene3.children,chosen.idn);
+            //game.showScore(chosen.idn);
+            
+            for(var i=0; i<scene3.children.length; i++) {
+                var r = scene3.getChildAt(i)
+                //console.log(i, r.idn, r.msg1)
+            }
+            
+            
             
         }
         
@@ -271,7 +280,7 @@ Game.prototype.setup = function(){
             spin.interactive = false;
             
             var delay = 400;
-            var repetitions = 15;
+            var repetitions = 1;
             var x = 0;
             var intervalID = window.setInterval(function () {
                game.animItems();
@@ -319,12 +328,27 @@ Game.prototype.setup = function(){
             s.x = 160 + (i * 120);
             s.y = 215;
             s.idn = n;
+            s.msg1 = data.items[n].msg1;
 
             sc3.addChild(s);
 
             tl.from(s.scale, 0.2, {y:0, x:0, ease: Elastic.easeOut.config(1,1)},"-=0.1")              
              
         }
+        
+        this.getSymbolData = function(obj,id) {
+            var l = obj.length;
+            var nid;
+            for(var i=0; i <obj.length; i++) {
+                var r = obj[i];
+                if(r.id == id) {
+                    nid = i;
+                    //console.log(id,'is located at',i)
+                }
+            }
+            return obj[nid];
+        }
+        
         
         
         this.backToGame = function() {

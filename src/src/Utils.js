@@ -125,7 +125,7 @@ Utils.prototype.setIntervalX = function(callback, delay, repetitions) {
        if (++x === repetitions) {
            window.clearInterval(intervalID);
        }
-    }, delay);
+    }, delay); 
 }
 
 
