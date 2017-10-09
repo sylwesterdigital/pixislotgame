@@ -280,7 +280,7 @@ Game.prototype.setup = function(){
             spin.interactive = false;
             
             var delay = 400;
-            var repetitions = 10;
+            var repetitions = 15;
             var x = 0;
             var intervalID = window.setInterval(function () {
                game.animItems();
