@@ -297,7 +297,7 @@ Game.prototype.setup = function(){
         
         this.animateItems = function() {
             
-            game.itemsPos +=1;
+            
             
             // animate
             var tl = new TimelineMax();
@@ -317,8 +317,8 @@ Game.prototype.setup = function(){
             sc3.getChildAt(0).destroy(); }.bind(this), "mov+=0.3")
 
             var n = basket[game.itemsPos+5];
-            var data = game.getSymbolData(data.items,game.basket[n])
-            var r = data.frame;
+            //var data = game.getSymbolData(data.items,game.basket[n])
+            var r = game.getSymbolData(data.items,game.basket[game.itemsPos+5]).frame;
             
             var i = 4;
 
@@ -333,7 +333,9 @@ Game.prototype.setup = function(){
 
             sc3.addChild(s);
 
-            tl.from(s.scale, 0.2, {y:0, x:0, ease: Elastic.easeOut.config(1,1)},"-=0.1")              
+            tl.from(s.scale, 0.2, {y:0, x:0, ease: Elastic.easeOut.config(1,1)},"-=0.1")
+            
+            game.itemsPos +=1;
              
         }
         
