@@ -435,16 +435,13 @@ Game.prototype.setup = function(){
             .to(bg1.scale, 3, {x:bg1.oscale.x, y:bg1.oscale.y},"back+=0")
             .to(bg1, 1, {width:bg1.owidth,height:bg1.oheight},"back+=0")
             
-            .to(msg1, 2, {x:-_SW+100,ease: Elastic.easeInOut.config(1, 1)}, "back+=0")
-            .to(award, 1.5, {x:-_SW+100,ease: Elastic.easeInOut.config(1, 1)},"back+=0.1")
-            .to(msg2, 1, {x:-_SW+100,ease: Elastic.easeInOut.config(1, 1)}, "back+=0.2")
+            .to(msg1, 2, {x:-_SW+100,ease: Elastic.easeInOut.config(1, 1),onComplete: function() {msg1.destroy()}}, "back+=0")
+            .to(award, 1.5, {x:-_SW+100,ease: Elastic.easeInOut.config(1, 1),onComplete: function() {award.destroy();}},"back+=0.1")
+            .to(msg2, 1, {x:-_SW+100,ease: Elastic.easeInOut.config(1, 1), onComplete:function() {msg2.destroy();}}, "back+=0.2")
             
             .to(spin, 0.3, {alpha:1},"back+=0")
             .from(spin.scale, 0.5, {x:0,y:0, ease: Elastic.easeOut.config(1, 0.3), onComplete:function() {spin.interactive = true}},"back+=0.6")
-            
-            .addCallback(function() { 
-                this.clearScoreScene([msg1,msg2,award]);
-            }.bind(this), "back+=2.5")
+
             
         }
         

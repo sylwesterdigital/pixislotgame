@@ -5,7 +5,7 @@ var styles = new Styles();
 var data = new Data();
 var game = new Game();
 
-var renderer = new PIXI.Application(800, 480, {forceCanvas: false, backgroundColor: 0x000033});
+var renderer = new PIXI.Application(800, 480, {forceCanvas: true, backgroundColor: 0x000033});
 
 
 document.getElementById('gameContainer').appendChild(renderer.view);
