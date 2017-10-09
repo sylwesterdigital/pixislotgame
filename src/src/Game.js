@@ -273,7 +273,7 @@ Game.prototype.setup = function(){
         
         this.animateCycle = function() {
             
-            //utils.setIntervalX(this.animItems,400,15)
+            //utils.setIntervalX(this.animateItems,400,15)
             
             
             var spin = utils.getSpriteByName(sc1,"spin");
@@ -283,7 +283,7 @@ Game.prototype.setup = function(){
             var repetitions = 15;
             var x = 0;
             var intervalID = window.setInterval(function () {
-               game.animItems();
+               game.animateItems();
                if (++x === repetitions) {
                    window.clearInterval(intervalID);
                    game.animateCycleEnd();
@@ -295,7 +295,7 @@ Game.prototype.setup = function(){
         
         
         
-        this.animItems = function() {
+        this.animateItems = function() {
             
             game.itemsPos +=1;
             
@@ -317,7 +317,9 @@ Game.prototype.setup = function(){
             sc3.getChildAt(0).destroy(); }.bind(this), "mov+=0.3")
 
             var n = basket[game.itemsPos+5];
-            var r = 'symbol'+n+'.png';
+            var data = game.getSymbolData(data.items,game.basket[n])
+            var r = data.frame;
+            
             var i = 4;
 
             var s = utils.addAtlasSprite(r);
@@ -327,8 +329,7 @@ Game.prototype.setup = function(){
             s.anchor.set(0.5);
             s.x = 160 + (i * 120);
             s.y = 215;
-            s.idn = n;
-            s.msg1 = data.items[n].msg1;
+            s.data = data;
 
             sc3.addChild(s);
 
