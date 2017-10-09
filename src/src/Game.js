@@ -138,6 +138,16 @@ Game.prototype.setup = function(){
             //tl.from(spin, 0.2, {alpha:0},"+=0.1");
             
         }    
+
+        this.drawAwardSquare = function(t) {
+            var gr = new PIXI.Graphics();
+            gr.lineStyle(2, 0xFF00FF, 1);
+            gr.beginFill(0xFF00BB, 0.25);
+            gr.drawRoundedRect(0, 0, 120, 200, 15);
+            gr.endFill();
+            t.addChild(gr);
+        }
+        
         
         this.showScore = function(sdata) {
                     
@@ -165,7 +175,7 @@ Game.prototype.setup = function(){
             // show choosen symbol
             //var spritedata = data.inam+""+data.items[4].id+".png";
             //console.log(spritedata);
-            var award = utils.addAtlasSprite(data.inam+""+sdata.id+".png");
+            var award = utils.addAtlasSprite(sdata.frame);
             award.anchor.set(0.5);
             award.name = "award";
             award.x = _SW*.5;
@@ -188,6 +198,7 @@ Game.prototype.setup = function(){
             tl.to(scene3, 0.3, {alpha:0},"award+=0")
             
             .to(spin,0.4, {alpha:0},"award+=0")
+            
             // a little bit of testing
             .to(utils.getSpriteByName(c1,"overlay1"),0.5, {y:-200,alpha:0},"award+=0")
             .to(utils.getSpriteByName(c1,"overlay2"),0.5, {y:"+=200",alpha:1},"award+=0")
@@ -210,7 +221,6 @@ Game.prototype.setup = function(){
 
         
        this.showItemsUpdated = function() {
-
            
             // remove this element from game.basket
             game.basket.splice(game.itemsPos+2,1);
@@ -292,8 +302,17 @@ Game.prototype.setup = function(){
             var spin = utils.getSpriteByName(sc1,"spin");
             spin.interactive = true;
             
+            
             var scene3 = utils.getSpriteByName(_st,"scene3");
-            game.showScore(scene3.children[3].data);
+            
+            var d = scene3.children[3].data;
+            
+            
+            var tl = new TimelineMax();
+            tl.addCallback(function() {game.showScore(d);}.bind(this), "+=2")
+            
+            //console.log(scene3.children[3].data);
+            
             
         }
 
